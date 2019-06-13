@@ -13,6 +13,8 @@ type UserServer struct {
 type UserModule interface {
 	CreateUser(map[string]interface{})
 	UpdateUser(map[string]interface{})
+	UpdateUserUinfo(map[string]interface{})
+	GetUinfos(map[string]interface{})
 }
 
 func (u *UserServer) CreateUser(info map[string]interface{}) ([]byte, int, error) {
@@ -24,7 +26,20 @@ func (u *UserServer) UpdateUser(info map[string]interface{}) ([]byte, int, error
 	return utils.SendRequestToWy(common.WyImEndpoint+common.UpdateUserUrl, "POST", []byte(GetBodyStr(info)))
 }
 
+func (u *UserServer) UpdateUserUinfo(info map[string]interface{}) ([]byte, int, error) {
+	return utils.SendRequestToWy(common.WyImEndpoint+common.UpdateUserUinfoUrl, "POST", []byte(GetBodyStr(info)))
+}
+
+func (u *UserServer) GetUinfos(info map[string]interface{}) ([]byte, int, error) {
+	return utils.SendRequestToWy(common.WyImEndpoint+common.GetUinfosUrl, "POST", []byte(GetBodyStr(info)))
+}
+
 func GetBodyStr(info map[string]interface{}) (bodyStr string) {
+
+	if accids, ok := info["accids"]; ok {
+		bodyStr += fmt.Sprintf("accids=%s", accids.(string))
+	}
+
 	if accid, ok := info["accid"]; ok {
 		bodyStr += fmt.Sprintf("accid=%s", accid.(string))
 	}

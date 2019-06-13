@@ -16,16 +16,19 @@ import (
 
 func SendRequestToWy(url, method string, byteArr []byte) ([]byte, int, error) {
 	client := &http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 120 * time.Second,
 	}
 	req, err := http.NewRequest(method, url, bytes.NewReader(byteArr))
 	if err != nil {
 		logs.Error("请求构造消息体错误:%v", err)
 		return nil, 0, err
 	}
+
 	var nonce = GenerateRandomString(20)
 	var nowStr = fmt.Sprintf("%d", int(time.Now().Unix()))
 
+	//短连接错误信息
+	req.Close = true
 	req.Header.Set("AppKey", common.APPKEY)
 	req.Header.Set("Nonce", nonce)
 	req.Header.Set("CurTime", nowStr)

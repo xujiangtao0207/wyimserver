@@ -2,13 +2,13 @@ package team
 
 import (
 	"fmt"
-	"github.com/astaxie/beego/logs"
+	// "github.com/astaxie/beego/logs"
 	"wyimserver/common"
 	"wyimserver/utils"
 )
 
 type TeamServer struct {
-	group TeamModule
+	team TeamModule
 }
 
 type TeamModule interface {
@@ -27,50 +27,50 @@ type TeamModule interface {
 	ChangeTeamOwner(map[string]interface{})     //移交群主
 }
 
-func (group *TeamServer) CreateTeam(info map[string]interface{}) ([]byte, int, error) {
+func (team *TeamServer) CreateTeam(info map[string]interface{}) ([]byte, int, error) {
 	return utils.SendRequestToWy(common.WyImEndpoint+common.CreateTeamUrl, "POST", []byte(GetBodyStr(info)))
 }
-func (group *TeamServer) AddUserToTeam(info map[string]interface{}) ([]byte, int, error) {
+func (team *TeamServer) AddUserToTeam(info map[string]interface{}) ([]byte, int, error) {
 	return utils.SendRequestToWy(common.WyImEndpoint+common.AddUserToTeamUrl, "POST", []byte(GetBodyStr(info)))
 }
 
-func (group *TeamServer) UpdateTeamInfo(info map[string]interface{}) ([]byte, int, error) {
+func (team *TeamServer) UpdateTeamInfo(info map[string]interface{}) ([]byte, int, error) {
 	return utils.SendRequestToWy(common.WyImEndpoint+common.UpdateTeamInfoUrl, "POST", []byte(GetBodyStr(info)))
 }
-func (group *TeamServer) KickUserToTeam(info map[string]interface{}) ([]byte, int, error) {
+func (team *TeamServer) KickUserToTeam(info map[string]interface{}) ([]byte, int, error) {
 	return utils.SendRequestToWy(common.WyImEndpoint+common.KickUserToTeamUrl, "POST", []byte(GetBodyStr(info)))
 }
-func (group *TeamServer) RemoveTeam(info map[string]interface{}) ([]byte, int, error) {
+func (team *TeamServer) RemoveTeam(info map[string]interface{}) ([]byte, int, error) {
 	return utils.SendRequestToWy(common.WyImEndpoint+common.RemoveTeamUrl, "POST", []byte(GetBodyStr(info)))
 }
-func (group *TeamServer) GetJoinTeamsForUser(info map[string]interface{}) ([]byte, int, error) {
+func (team *TeamServer) GetJoinTeamsForUser(info map[string]interface{}) ([]byte, int, error) {
 	return utils.SendRequestToWy(common.WyImEndpoint+common.GetJoinTeamsForUserUrl, "POST", []byte(GetBodyStr(info)))
 }
-func (group *TeamServer) GetTeamDetail(info map[string]interface{}) ([]byte, int, error) {
+func (team *TeamServer) GetTeamDetail(info map[string]interface{}) ([]byte, int, error) {
 	return utils.SendRequestToWy(common.WyImEndpoint+common.GetTeamDetailUrl, "POST", []byte(GetBodyStr(info)))
 }
 
-func (group *TeamServer) LeaveTeam(info map[string]interface{}) ([]byte, int, error) {
+func (team *TeamServer) LeaveTeam(info map[string]interface{}) ([]byte, int, error) {
 	return utils.SendRequestToWy(common.WyImEndpoint+common.LeaveTeamUrl, "POST", []byte(GetBodyStr(info)))
 }
 
-func (group *TeamServer) MuteTlist(info map[string]interface{}) ([]byte, int, error) {
+func (team *TeamServer) MuteTlist(info map[string]interface{}) ([]byte, int, error) {
 	return utils.SendRequestToWy(common.WyImEndpoint+common.MuteTlistUrl, "POST", []byte(GetBodyStr(info)))
 }
 
-func (group *TeamServer) MuteTlistAll(info map[string]interface{}) ([]byte, int, error) {
+func (team *TeamServer) MuteTlistAll(info map[string]interface{}) ([]byte, int, error) {
 	return utils.SendRequestToWy(common.WyImEndpoint+common.MuteTlistAllUrl, "POST", []byte(GetBodyStr(info)))
 }
 
-func (group *TeamServer) GetlistTeamMute(info map[string]interface{}) ([]byte, int, error) {
+func (team *TeamServer) GetlistTeamMute(info map[string]interface{}) ([]byte, int, error) {
 	return utils.SendRequestToWy(common.WyImEndpoint+common.GetlistTeamMuteUrl, "POST", []byte(GetBodyStr(info)))
 }
 
-func (group *TeamServer) UpdateTeamNick(info map[string]interface{}) ([]byte, int, error) {
+func (team *TeamServer) UpdateTeamNick(info map[string]interface{}) ([]byte, int, error) {
 	return utils.SendRequestToWy(common.WyImEndpoint+common.UpdateTeamNickUrl, "POST", []byte(GetBodyStr(info)))
 }
 
-func (group *TeamServer) ChangeTeamOwner(info map[string]interface{}) ([]byte, int, error) {
+func (team *TeamServer) ChangeTeamOwner(info map[string]interface{}) ([]byte, int, error) {
 	return utils.SendRequestToWy(common.WyImEndpoint+common.ChangeTeamOwnerUrl, "POST", []byte(GetBodyStr(info)))
 }
 
@@ -81,7 +81,7 @@ func GetBodyStr(info map[string]interface{}) (bodyStr string) {
 
 	if tid, ok := info["tid"]; ok {
 		bodyStr = common.GetBodyPrefix(bodyStr)
-		bodyStr += fmt.Sprintf("tid=%d", tid.(int))
+		bodyStr += fmt.Sprintf("tid=%s", tid.(string))
 	}
 
 	if owner, ok := info["owner"]; ok {
@@ -98,6 +98,10 @@ func GetBodyStr(info map[string]interface{}) (bodyStr string) {
 		// 	memberArr = append(memberArr, member.(string))
 		// }
 		bodyStr += fmt.Sprintf("&members=%s", members)
+	}
+
+	if member, ok := info["member"]; ok {
+		bodyStr += fmt.Sprintf("&member=%s", member.(string))
 	}
 	if announcement, ok := info["announcement"]; ok {
 		bodyStr += fmt.Sprintf("&announcement=%s", announcement.(string))
@@ -157,6 +161,6 @@ func GetBodyStr(info map[string]interface{}) (bodyStr string) {
 	if attach, ok := info["attach"]; ok {
 		bodyStr += fmt.Sprintf("&attach=%s", attach.(string))
 	}
-	logs.Info("打印body[%s]", bodyStr)
+
 	return bodyStr
 }
