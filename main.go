@@ -24,10 +24,11 @@ func main() {
 
 	// RemoveTeam()
 	// ClearGroupAll()
-	// UpdateTeamGroupInfo()
-	// TestGetTeamDetail("2560383622")
+	// UpdateTeamGroupInfo("2559483930", "101269535")
+	TestGetTeamDetail("2610776150")
 	// TestKickUserToTeam()
-	KickAllUserToTeam()
+	// KickAllUserToTeam()
+	// UpdateTeamAnnouncement(101404418, "", "2611391240")
 }
 
 type JoinTeamsForUserResp struct {
@@ -84,7 +85,7 @@ func ClearGroup(accid string) {
 func TestGetJoinTeamsForUser() {
 	var teams = new(team.TeamServer)
 	var info = make(map[string]interface{})
-	info["accid"] = fmt.Sprintf("%d", 91004904)
+	info["accid"] = fmt.Sprintf("%d", 101378960)
 	bytes, code, err := teams.GetJoinTeamsForUser(info)
 	logs.Info("请求响应消息[%s]", string(bytes))
 	logs.Info("请求响应消息[%d]", code)
@@ -256,9 +257,9 @@ var teams = new(team.TeamServer)
 func RemoveTeam() {
 	var teams = new(team.TeamServer)
 	var info = make(map[string]interface{})
-	info["owner"] = "101304569"
+	info["owner"] = "100000001"
 	//101374698
-	info["tid"] = "2560328383"
+	info["tid"] = "2605758235"
 	// 2559298425
 	bytes, code, err := teams.RemoveTeam(info)
 	logs.Info("请求响应消息[%s]", string(bytes))
@@ -453,11 +454,11 @@ func UpdateUserUinfo() {
 	}
 }
 
-func UpdateTeamGroupInfo() {
+func UpdateTeamGroupInfo(tid, owner string) {
 
 	var info = make(map[string]interface{})
-	info["tid"] = "2569132195"
-	info["owner"] = "101405885"
+	info["tid"] = tid
+	info["owner"] = owner
 
 	// info["joinmode"] = 1
 	info["teamMemberLimit"] = 50
@@ -470,4 +471,107 @@ func UpdateTeamGroupInfo() {
 		return
 	}
 	return
+}
+
+type RoomDetailRequest struct {
+	RoomUuid      string `json:"room_uuid"`       //群tid
+	RoomNum       string `json:"room_num"`        //房间码
+	Parameter     int    `json:"parameter"`       //字数/时间
+	GlobalStatus  int    `json:"global_status"`   //公有/私有 0拒绝 1 允许
+	PeopleCount   int    `json:"people_count"`    //人数限制
+	RoomDescribe  string `json:"room_describe"`   //房间描述
+	RoomName      string `json:"room_name"`       //房间名称
+	RoomType      int    `json:"room_type"`       //房间类型
+	Status        int    `json:"status"`          //房间状态
+	IsExistSecret int    `json:"is_exist_secret"` //是否存在密码
+	Secret        string `json:"secret"`          //密码
+}
+
+var CommonInfoMap = map[string]string{
+	"2560393181": "满腹经纶",
+	"2560387530": "九天揽月",
+	"2560377941": "日进斗金",
+	"2560381653": "乘风破浪",
+	"2560383622": "才高八斗",
+	"2578282280": "学富五车",
+}
+
+func UpdateCommonRoomInfo() {
+	// var uid = 100000001
+
+	for key, value := range CommonInfoMap {
+		//查询群信息
+		_, _, custom, _, err := TestGetTeamDetail(key)
+		var roomReq RoomDetailRequest
+		err = json.Unmarshal([]byte(custom), &roomReq)
+		if err != nil {
+			fmt.Println("解析异常")
+			return
+		}
+		fmt.Println(value)
+		// roomReq.RoomNum = value
+		// bytes, _ := json.Marshal(&roomReq)
+		// err = UpdateTmpTeamGroupInfo(uid, 0, key, string(bytes))
+		// if err != nil {
+		// 	//创建群异常,销毁群操作
+		// 	return
+		// }
+	}
+
+}
+func UpdateTmpTeamGroupInfo(uid, room_status int, roomUuid string, custom string) (err error) {
+
+	var info = make(map[string]interface{})
+	info["tid"] = roomUuid
+	info["owner"] = fmt.Sprintf("%d", uid)
+
+	var customInter map[string]interface{}
+	err = json.Unmarshal([]byte(custom), &customInter)
+	if err != nil {
+		logs.Error("解析数据异常,错误信息[%v]", err)
+
+	}
+
+	if _, ok := customInter["room_status"]; ok {
+		customInter["room_status"] = room_status
+	} else {
+		customInter["room_status"] = room_status
+	}
+
+	//不允许任何用户加入
+	if room_status == 1 {
+		info["joinmode"] = 2
+	}
+
+	bytesss, _ := json.Marshal(&customInter)
+
+	info["custom"] = string(bytesss)
+
+	logs.Debug("打印更新群请求体[%v]", info)
+	bytes, _, err := teams.UpdateTeamInfo(info)
+
+	if err != nil {
+		logs.Error("更新群信息异常,错误信息[%v]", err)
+		return err
+	}
+
+	logs.Debug("更新群信息响应体[%s],", string(bytes))
+	return nil
+}
+
+func UpdateTeamAnnouncement(uid int, announcement, roomUuid string) {
+
+	var info = make(map[string]interface{})
+	info["tid"] = roomUuid
+	info["owner"] = fmt.Sprintf("%d", uid)
+
+	info["announcement"] = announcement
+	logs.Debug("打印更新群请求体[%v]", info)
+	bytes, _, err := teams.UpdateTeamInfo(info)
+
+	if err != nil {
+		logs.Error("更新群公告信息异常,错误信息[%v]", err)
+		return
+	}
+	logs.Debug("更新群信息响应体[%s],", string(bytes))
 }

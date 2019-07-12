@@ -93,10 +93,6 @@ func GetBodyStr(info map[string]interface{}) (bodyStr string) {
 	}
 
 	if members, ok := info["members"]; ok {
-		// var memberArr []string
-		// for _, member := range members.([]interface{}) {
-		// 	memberArr = append(memberArr, member.(string))
-		// }
 		bodyStr += fmt.Sprintf("&members=%s", members)
 	}
 
