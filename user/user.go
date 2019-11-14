@@ -2,6 +2,7 @@ package user
 
 import (
 	"fmt"
+	"github.com/astaxie/beego/logs"
 	"wyimserver/common"
 	"wyimserver/utils"
 )
@@ -76,5 +77,6 @@ func GetBodyStr(info map[string]interface{}) (bodyStr string) {
 	if ex, ok := info["ex"]; ok {
 		bodyStr += fmt.Sprintf("&ex=%s", ex.(string))
 	}
+	logs.Info(bodyStr)
 	return
 }

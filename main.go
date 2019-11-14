@@ -14,18 +14,19 @@ import (
 
 func main() {
 	// UpdateUserUinfo()
-	// GetUinfos()
+	GetUinfos()
 	// TestGetJoinTeamsForUser()
 	// TestSendMsg()
 	// TestSendAttachMsg()
 	// TestCreateTeam()
 	// TestCreateUser()
 	// TestAddUserToTeam()
-
-	// RemoveTeam()
+	// TestUpdateUser()
+	// UpdateUserUinfo()
+	RemoveTeam()
 	// ClearGroupAll()
 	// UpdateTeamGroupInfo("2559483930", "101269535")
-	TestGetTeamDetail("2610776150")
+	// TestGetTeamDetail("2605766400")
 	// TestKickUserToTeam()
 	// KickAllUserToTeam()
 	// UpdateTeamAnnouncement(101404418, "", "2611391240")
@@ -85,7 +86,8 @@ func ClearGroup(accid string) {
 func TestGetJoinTeamsForUser() {
 	var teams = new(team.TeamServer)
 	var info = make(map[string]interface{})
-	info["accid"] = fmt.Sprintf("%d", 101378960)
+	// info["accid"] = fmt.Sprintf("%d", 101418928)
+	info["accid"] = fmt.Sprintf("%d", 101741243)
 	bytes, code, err := teams.GetJoinTeamsForUser(info)
 	logs.Info("请求响应消息[%s]", string(bytes))
 	logs.Info("请求响应消息[%d]", code)
@@ -195,7 +197,7 @@ func TestGetTeamDetail(tid string) ([]Member, Owner, string, string, error) {
 }
 
 func KickAllUserToTeam() {
-	var tids = []string{"2560393181", "2560387530", "2560377941", "2560381653", "2560383622", "2578282280"}
+	var tids = []string{"2605766400", "2627348932", "2627357537", "2627358721", "2627370095"}
 	// var tids = []string{"2560383622"}
 	for j := 0; j < len(tids); j++ {
 
@@ -205,7 +207,7 @@ func KickAllUserToTeam() {
 		for i := 0; i < len(members); i++ {
 			var member = members[i]
 			uid, _ := strconv.Atoi(member.Accid)
-			if uid < 100000000 && uid > 0 {
+			if uid != 100000001 && uid > 0 {
 				KickUserToTeam(tid, owner.Accid, fmt.Sprintf("[\"%s\"]", member.Accid))
 			}
 		}
@@ -257,9 +259,9 @@ var teams = new(team.TeamServer)
 func RemoveTeam() {
 	var teams = new(team.TeamServer)
 	var info = make(map[string]interface{})
-	info["owner"] = "100000001"
+	info["owner"] = "100038367"
 	//101374698
-	info["tid"] = "2605758235"
+	info["tid"] = "2601736241"
 	// 2559298425
 	bytes, code, err := teams.RemoveTeam(info)
 	logs.Info("请求响应消息[%s]", string(bytes))
@@ -303,9 +305,9 @@ func TestAddUserToTeam() {
 func TestKickUserToTeam() {
 	var teams = new(team.TeamServer)
 	var info = make(map[string]interface{})
-	info["tid"] = "2560383622"
+	info["tid"] = "2627370095"
 	info["owner"] = "100000001"
-	info["members"] = "[\"91012472\",\"91012469\",\"91012468\"]"
+	info["members"] = "[\"101739303\",\"101649275\",\"101639519\"]"
 	info["msg"] = "踢人出群"
 	info["magree"] = 0
 	info["joinmode"] = 0
@@ -367,8 +369,9 @@ func TestChangeTeamOwner() {
 func TestUpdateUser() {
 	var users = new(user.UserServer)
 	var info = make(map[string]interface{})
-	info["accid"] = "1234aaab"
-	info["name"] = "xujiangtao3"
+	info["accid"] = "101729417"
+	info["name"] = "一只小蚂蚁"
+	info["token"] = "comguachengwww"
 	bytes, code, err := users.UpdateUser(info)
 	logs.Info("请求响应消息[%s]", string(bytes))
 	logs.Info("请求响应消息[%d]", code)
@@ -392,10 +395,12 @@ func TestUpdateUserUinfo() {
 func TestCreateUser() {
 	var users = new(user.UserServer)
 	var info = make(map[string]interface{})
-	info["accid"] = "101272265"
-	info["name"] = "1234"
-	info["ex"] = "http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJzogx0ozXBPZj42iapodEK1FfodpSqaKZmynfxyd5nibln44HgUb0Tlc3PZT8qEcLy5VIG2wRoviaxQ/132"
-	info["props"] = "{\"avatar\":\"http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJzogx0ozXBPZj42iapodEK1FfodpSqaKZmynfxyd5nibln44HgUb0Tlc3PZT8qEcLy5VIG2wRoviaxQ/132\"}"
+	info["accid"] = "101407762"
+	info["token"] = "comguachengwww"
+	info["name"] = "汀树绿拂地"
+	info["icon"] = "https://img.chenggua.com/1494812392000311.png"
+	info["ex"] = "{\"certifiedname\":\"\",\"wealthvalue\":\"\",\"wealthsystem\":\"\",\"wealthGrade\":\"\"}"
+	info["props"] = "{\"avatar\":\"https://img.chenggua.com/1494812392000311.png\"}"
 	bytes, code, err := users.CreateUser(info)
 	logs.Info("请求响应消息[%s]", string(bytes))
 	logs.Info("请求响应消息[%d]", code)
@@ -433,7 +438,7 @@ var users = new(user.UserServer)
 
 func GetUinfos() {
 	var info = make(map[string]interface{})
-	info["accids"] = "[100038367]"
+	info["accids"] = "[101407762]"
 	bytes, code, err := users.GetUinfos(info)
 	logs.Info("请求响应消息[%s]", string(bytes))
 	logs.Info("请求响应消息[%d]", code)
@@ -444,8 +449,24 @@ func GetUinfos() {
 
 func UpdateUserUinfo() {
 	var info = make(map[string]interface{})
-	info["accid"] = "100038367"
-	info["icon"] = "http://img.chenggua.com/Fl0Oai-JOC_xrcCbbFjKftQcL9K-"
+	info["accid"] = "101729417"
+	info["name"] = "一只小蚂蚁"
+	info["token"] = "comguachengwww"
+	info["mobile"] = "18371729137"
+	info["icon"] = "https://img.chenggua.com/1494812392000311.png"
+	info["ex"] = "{\"certifiedname\":\"\",\"wealthvalue\":\"\",\"wealthsystem\":\"\",\"wealthGrade\":\"\",\"phone\":\"18371729137\"}"
+	bytes, code, err := users.UpdateUserUinfo(info)
+	logs.Info("请求响应消息[%s]", string(bytes))
+	logs.Info("请求响应消息[%d]", code)
+	if err != nil {
+		logs.Error("创建用户异常,错误信息:%v", err)
+	}
+}
+
+func UpdateUserProfileUinfo(uid int, nickname string) {
+	var info = make(map[string]interface{})
+	info["accid"] = fmt.Sprintf("%d", uid)
+	info["name"] = nickname
 	bytes, code, err := users.UpdateUserUinfo(info)
 	logs.Info("请求响应消息[%s]", string(bytes))
 	logs.Info("请求响应消息[%d]", code)

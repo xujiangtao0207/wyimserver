@@ -7,6 +7,7 @@ const (
 	APPKEY             = "60ed88b054f7476996388361ed9ad6f0"
 	APPSECRET          = "5eda9eecc8c1"
 	WyImEndpoint       = "https://api.netease.im/nimserver"
+	WySmsEndpoint      = "https://api.netease.im/sms"
 	CreateUserUrl      = "/user/create.action"      //创建用户
 	UpdateUserUrl      = "/user/update.action"      // 网易云通信ID更新
 	UpdateUserUinfoUrl = "/user/updateUinfo.action" //更新用户信息
@@ -34,4 +35,7 @@ const (
 	SendMsgUrl            = "/msg/sendMsg.action"            //发送自定义系统通知
 	SendAttachMsgUrl      = "/msg/sendAttachMsg.action"      //发送自定义系统通知
 	SendBatchAttachMsgUrl = "/msg/sendBatchAttachMsg.action" //批量发送点对点自定义系统通知
+
+	//短信
+	SendCodeSmsUrl = "/sendcode.action"
 )
